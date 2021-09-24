@@ -1,7 +1,7 @@
 # js-cart-setup
 ADD ITEMS TO CART JAVASCRIPT PROJECT
 
-a sweetshop online shop.
+an online sweetshop.
 you can select multiple items with carious numbers.
 in the shopping cart you can see your selected items with their numbers and price for each item and also total price of your basket.
 
