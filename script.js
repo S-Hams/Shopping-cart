@@ -1,18 +1,19 @@
-const localstorage = {}
 
 
-    /// set the functionality of shopping cart button 
-    (
-        function () {
-            const cartinfo = document.getElementById('cart-info') // the shopping cart button (its a div infact)
-            const cart = document.getElementById('cart') // the shopping cart itself
 
-            cartinfo.addEventListener('click', function () {
-                cart.classList.toggle('show-cart')
-            })
-        }
-    )();
+/// set the functionality of shopping cart button 
+(
+    function () {
+        const cartinfo = document.getElementById('cart-info') // the shopping cart button (its a div infact)
+        const cart = document.getElementById('cart') // the shopping cart itself
 
+        cartinfo.addEventListener('click', function () {
+            cart.classList.toggle('show-cart')
+        })
+    }
+)();
+
+var localstorage = {}
 var addeditems = {} // esm va tedad e har item, addeditems = { item1name : item1number, item2name : item2number , ... }
 var totalprice = 0; // kolle cost e basket e user
 
@@ -107,41 +108,37 @@ var totalprice = 0; // kolle cost e basket e user
                     console.log(itemname, addeditems, addeditems[itemname])
                     if (addeditems[itemname] == 0) {
                         itemcart.remove()
-
-                    } else {
-                        ////namayesh majmoo e gheymat e har item too cart baad az kam shodan e 1 vahedi
-                        const updateprice = document.getElementById(`cart${itemname}`).querySelector('#item-price')
-                        updateprice.innerHTML = itemprice * addeditems[itemname]
-
-                        ////namayesh e tedad e har item tu cart
-                        const itemnumber = document.getElementById(itemname).nextElementSibling
-                        itemnumber.innerHTML = `\u00A0x\u00A0${addeditems[itemname]}`
                     }
-
+                    ////namayesh majmoo e gheymat e har item too cart baad az kam shodan e 1 vahedi
+                    else {
+                        itemstotal(itemname)
+                    }
                     totalcost()
                 })
                 itemcart.children[0].appendChild(dltbtn)
-
             }
             //inja migim age roo button e add-to-cart baraye bare 2nd,3rd, ... click shod bia price e kol ro update kon va hamchenin tedad e item ro ham jolo item benevis tu shopping cart, intori x1,x2,x3
             else {
-                ////namayesh majmoo e gheymat e har item too cart
-                const updateprice = document.getElementById(`cart${itemname}`).querySelector('#item-price')
-                updateprice.innerHTML = itemprice * addeditems[itemname]
-
-                ////namayesh e tedad e har item tu cart
-                const itemnumber = document.getElementById(itemname).nextElementSibling
-                itemnumber.innerHTML = `\u00A0x\u00A0${addeditems[itemname]}`
-
+                itemstotal(itemname)
             }
-
-
             totalcost()
-
         })
     })
 
 })();
+
+//shopping itemscart total number and total price : x4 $20
+itemstotal = (itemname,) => {
+    ////namayesh majmoo e gheymat e har item too itemcart
+    const updateprice = document.getElementById(`cart${itemname}`).querySelector('#item-price')
+    updateprice.innerHTML = itemprice * addeditems[itemname]
+
+    ////namayesh e tedad e har item tu itemcart
+    const itemnumber = document.getElementById(itemname).nextElementSibling
+    itemnumber.innerHTML = `\u00A0x\u00A0${addeditems[itemname]}`
+}
+
+
 
 //// function for clear button // item ha ro az shopping cart pak mikonim
 (
