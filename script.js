@@ -1,66 +1,79 @@
-(
-    function () {
-        const cartinfo = document.getElementById('cart-info') // the shopping cart button (its a div infact)
-        const cart = document.getElementById('cart') // the shopping cart
+const localstorage = {}
 
-        cartinfo.addEventListener('click', function () {
-            cart.classList.toggle('show-cart')
-        })
-    }
-)();
 
-var addeditems = {} // esm va tedad e har item
+    /// set the functionality of shopping cart button 
+    (
+        function () {
+            const cartinfo = document.getElementById('cart-info') // the shopping cart button (its a div infact)
+            const cart = document.getElementById('cart') // the shopping cart itself
+
+            cartinfo.addEventListener('click', function () {
+                cart.classList.toggle('show-cart')
+            })
+        }
+    )();
+
+var addeditems = {} // esm va tedad e har item, addeditems = { item1name : item1number, item2name : item2number , ... }
 var totalprice = 0; // kolle cost e basket e user
 
 ////adding items to the cart
 (function () {
 
-    ////selecting add-to cart button of items
-    const cartBtn = document.querySelectorAll('.store-item-icon') // bcz we have more than one 
+    ////setting functionality to add-to-cart button of 12 items
 
-    cartBtn.forEach(function (btn) {
-        const itemname2 = btn.parentElement.nextElementSibling.querySelector("#store-item-name").textContent
-        addeditems[itemname2] = 0
+    const cartBtns = document.querySelectorAll('.store-item-icon') // selecting the add-to-cart button for 12 items
 
-        btn.addEventListener("click", function (e) {
+    cartBtns.forEach(function (cartBtn) {
+        //itemname2 is the name of each item
+        const itemname2 = cartBtn.parentElement.nextElementSibling.querySelector("#store-item-name").textContent  // darim baraye har button mirim name e item esh ro ham barmidarim
+        addeditems[itemname2] = 0  //setting the number of each item 0 to have an empty basket at the beginning
 
-            ////parent e marboot be span ee ke rush click shode ro mikhaim select konim
+
+        cartBtn.addEventListener("click", function (e) {
+
+            ////parent e marboot be span ee ke rush click shode ro mikhaim select konim ke baadesh image esh ro bardarim be onvan e childesh
+
             var itemimg // itemimg ine : <div class="img-container">
             if (e.target.tagName == "SPAN") { //check if user clicked on span or i
                 itemimg = e.target.parentElement
             } else { itemimg = e.target.parentElement.parentElement }
 
-            ////inja mikhaim esme folder ro az avval e address bardarim va esme ye 
-            ////folder dige ro bezarim ke bere thumbnail e un ax ro biare baramun
+            ////inja mikhaim esme folder ex image ro az avval e address e image bardarim va esme ye folder dige ro bezarim ke bere thumbnail e un ax ro biare baramun
 
-            imgaddress = itemimg.getElementsByTagName("img")[0].src //the img element
+            imgaddress = itemimg.getElementsByTagName("img")[0].src //getting the address text from src property of img element
             imgindex = imgaddress.indexOf("img") + 3 //index of the end of img address
-            img = imgaddress.slice(imgindex) // method e slice miad az un index be baad ro negah midare
+            img = imgaddress.slice(imgindex) // method e slice miad az un index be baad ro negah midare, inja esm e folder ro kick kardim az address ta tu khat e baad esm e folder e thumbnail ro be jash bechasbunim
+            //img is like "/sweet-1.jpeg"
             img2address = `img-cart${img}` //address e thumbnail az folder e img-cart
+            //img2address is like "img-carts/sweet-1.jpeg"
 
             ////sibling e parent e span ee ke rush click shode ro select mikonim ke esm va price e item ro az tush bekhunim
-            var iteminfo = itemimg.nextElementSibling
-            itemname = iteminfo.querySelector("#store-item-name").innerHTML
+            var iteminfo = itemimg.nextElementSibling // iteminfo ine : <div class="card-body">
+            //itemname = iteminfo.querySelector("#store-item-name").innerHTML
+            itemname = itemname2
 
             itemprice = iteminfo.children[0].children[1].children[0].textContent
 
             addeditems[itemname] += 1
             //            alert(addeditems[itemname] + " " + itemname + " in your basket")
 
+            // ba in item miaim too shopping cart bara har item e entekhab shode data darj mikonim.
             const item = {
                 img: img2address,
                 name: itemname,
                 price: itemprice * addeditems[itemname]
             }
 
-            ////age addeditems[itemname] =1 hast element create beshe va ella ghablan create shode va faghat +1 beshe
+            ////age addeditems[itemname] =1 hast yaani taze avvalin bar click shode va bayad element create beshe va ella ghablan create shode va faghat +1 beshe
             ////ezafe kardan e item e jadid be cart
 
             if (addeditems[itemname] == 1) {
 
+                //bara har item ye div be esme itemcart misazim
                 var itemcart = document.createElement("div")
                 itemcart.id = `cart${itemname}`
-                itemcart.innerHTML = `
+                //be itemcart ee ke misazim bakhsh haye mokhtalef midim
+                itemcart.innerHTML = ` 
             <!-- cart item -->
           <div class="cart-item d-flex justify-content-between text-capitalize my-3">
             <img src="${item.img}" class="img-fluid rounded-circle" id="item-img" alt="">
@@ -74,9 +87,10 @@ var totalprice = 0; // kolle cost e basket e user
           </div>
           <!--end of  cart item -->
             `
-                ////total cart ghemsat e payini e cart e, total price o ina
+                ////total cart ghesmat e balayi e shopping cart e
                 const totalcart = cart.querySelector('.cart-total-container.d-flex.justify-content-around.text-capitalize.mt-5')
-                cart.insertBefore(itemcart, totalcart)
+                // az payin itemcart ha ro ezafe mikonim ke tartib e zamani shun hefz beshe
+                cart.insertBefore(itemcart, totalcart) //total cart ghemsat e payini e cart e, total price o ina
 
                 ////ezafe kardan e dokmeye delete 
                 var dltbtn = document.createElement("a")
@@ -85,27 +99,35 @@ var totalprice = 0; // kolle cost e basket e user
                 dltbtn.classList.add("cart-item-remove")
                 dltbtn.innerHTML = '<i class="fas fa-trash"></i>'
 
-                ////ziad, kam va hazf kardan e tedad e item ha too cart
+                ////kam va hazf kardan e tedad e item ha too cart, ziad kardan ro ham mitunam ezafe konam
                 dltbtn.addEventListener('click', function () {
 
-                    itemname = dltbtn.previousElementSibling.children[0].innerHTML
+                    itemname = itemname2 // dltbtn.previousElementSibling.children[0].children[0].innerHTML 
                     addeditems[itemname] -= 1
+                    console.log(itemname, addeditems, addeditems[itemname])
                     if (addeditems[itemname] == 0) {
                         itemcart.remove()
+
                     } else {
+                        ////namayesh majmoo e gheymat e har item too cart baad az kam shodan e 1 vahedi
                         const updateprice = document.getElementById(`cart${itemname}`).querySelector('#item-price')
                         updateprice.innerHTML = itemprice * addeditems[itemname]
+
+                        ////namayesh e tedad e har item tu cart
+                        const itemnumber = document.getElementById(itemname).nextElementSibling
+                        itemnumber.innerHTML = `\u00A0x\u00A0${addeditems[itemname]}`
                     }
 
                     totalcost()
                 })
                 itemcart.children[0].appendChild(dltbtn)
 
-            } else {
+            }
+            //inja migim age roo button e add-to-cart baraye bare 2nd,3rd, ... click shod bia price e kol ro update kon va hamchenin tedad e item ro ham jolo item benevis tu shopping cart, intori x1,x2,x3
+            else {
                 ////namayesh majmoo e gheymat e har item too cart
                 const updateprice = document.getElementById(`cart${itemname}`).querySelector('#item-price')
                 updateprice.innerHTML = itemprice * addeditems[itemname]
-
 
                 ////namayesh e tedad e har item tu cart
                 const itemnumber = document.getElementById(itemname).nextElementSibling
@@ -128,7 +150,7 @@ var totalprice = 0; // kolle cost e basket e user
         const checkout = clearcart.nextElementSibling
 
         clearcart.addEventListener("click", () => {
-            const items = [...cart.children] //mohtaviat e cart
+            const items = [...cart.children] //mohtaviat e cart  (item haye add shode)
             items.forEach(item => {
                 if (item.id != "total") { //gheir az dokme haye clear va checkout kolle cart ro pak mikone
                     item.remove()
@@ -182,6 +204,7 @@ totalcost = () => {
     carttotalprice.innerHTML = totalprice
     carttotalitems.innerHTML = totalitems
 
+    localstorage = {} // localstorage (addeditems ) // bayad biam ye function tashkil bedam baraye sakhtan e itemcart tu shopping cart ke ba load shodan e page biad az addeditems itemcart ha ro add kone. ya inke kollan html e ghesmat e cartitem ro berizam tu localstorage va load konam moghe ye load e page.
 
 }
 
