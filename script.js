@@ -128,7 +128,7 @@ var totalprice = 0; // kolle cost e basket e user
 })();
 
 //shopping itemscart total number and total price : x4 $20
-itemstotal = (itemname,) => {
+itemstotal = (itemname) => {
     ////namayesh majmoo e gheymat e har item too itemcart
     const updateprice = document.getElementById(`cart${itemname}`).querySelector('#item-price')
     updateprice.innerHTML = itemprice * addeditems[itemname]
